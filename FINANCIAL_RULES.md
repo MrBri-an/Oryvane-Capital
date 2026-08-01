@@ -192,3 +192,17 @@ Financial audit records must identify:
 7. Related resource IDs
 8. Date and time
 9. Session metadata where appropriate
+
+## 15. Phase 10B implementation boundary
+
+Payment approval and wallet adjustments are implemented as atomic, audited database operations. Payment crediting can occur only once and always creates an immutable transaction. Corrections use new correction or reversal records rather than editing financial history.
+
+Investment earnings posting remains blocked because the product decisions about immediate withdrawability and wallet-total treatment are unresolved in `OPEN_QUESTIONS.md`. Existing earnings can be viewed, but no Phase 10B control invents an accounting rule for posting them.
+
+## 16. Phase 10C approved settlement rules
+
+Pending investment principal is reserved by reducing available balance and increasing invested amount. Rejection or cancellation releases that principal back to available balance, reduces invested amount, and leaves total balance unchanged. Maturity performs the same principal release. Each release is an immutable reversal linked to the original allocation, so it can occur only once.
+
+Active investment earnings remain informational and unavailable. After maturity, authorised administrators may post realised earnings. Realised earnings atomically increase the investment earnings figure, wallet total balance, available balance, and total earnings, while creating an immutable transaction, investment update, and audit record. The unique transaction reference prevents duplicate posting.
+
+Withdrawal submission reserves available funds without immediately reducing total balance. Rejection releases the reservation. Marking a processing withdrawal paid reduces total balance; reversing a paid withdrawal restores total and available balance through a new immutable reversal.

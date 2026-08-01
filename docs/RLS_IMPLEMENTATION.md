@@ -45,6 +45,20 @@ The service-role-only `bootstrap_first_admin(uuid, text)` is not executable by b
 
 Admin page services require AAL2 and a specific permission before querying. RLS independently repeats the active-admin, assigned-permission, and AAL2 requirements. The Phase 10A application exposes no admin insert, update, delete, approval, crediting, restriction, or status operation.
 
+Phase 10B preserves direct table-write denial and adds narrow `SECURITY DEFINER` operation functions. Each function has an empty fixed `search_path`, requires an active AAL2 administrator through `has_admin_permission`, validates the current record state, and writes the business record and append-only audit log atomically. Execution is revoked from `public` and `anon`; authenticated callers still receive no raw financial or audit table mutation privilege.
+
+Mutation permissions are distinct from read permissions: `payments.manage`, `payments.reject`, `restrictions.change`, `investments.manage`, and `notifications.send`. This prevents the Read only auditor and support roles from gaining mutation authority merely because they can read related records. Payment crediting additionally requires `finance.adjust`.
+
+`wallet_transactions_payment_credit_unique` permits at most one wallet transaction for a payment submission. Payment and wallet row locks provide further concurrency protection. Adjustments use `perform_wallet_adjustment`, including opposite-direction, exact-amount, single-use reversal validation.
+
+Notifications remain user-owned for normal-user reads; administrators with `notifications.send` may read notification history. No Phase 10B function permanently deletes notifications, transactions, payments, investments, users, or audit events.
+
+Phase 10C adds user-owned `submit_withdrawal_request` and AAL2 admin settlement functions. The withdrawal function derives ownership from `auth.uid()`, requires an active profile, checks active withdrawal or account restrictions, locks the matching wallet, validates the method-specific destination, and reserves funds atomically. Users retain no direct withdrawal, wallet, or transaction table write privilege.
+
+Investment principal release and maturity lock the investment, wallet, and original allocation transaction. An immutable reversal linked through the unique `reversal_of` column returns principal once. Realised earnings require `investments.manage` and `finance.adjust`, are allowed only after maturity, and use the globally unique transaction reference for idempotency.
+
+`withdrawals.manage` is assigned only to Super administrator and Finance administrator. Administrative withdrawal transitions require an active AAL2 administrator and preserve all request, transaction, and audit history. Bank account numbers and Bitcoin addresses are stored in the protected destination object and masked in user and administrator tables.
+
 ## Storage
 
 Both buckets are private:

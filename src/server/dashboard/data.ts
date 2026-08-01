@@ -86,9 +86,11 @@ export async function getDeposits() {
 export async function getWithdrawals() {
   const userId = await permittedUserId();
   const supabase = await createClient();
-  const result = await supabase.from("withdrawal_requests").select("id, method, status, amount, currency, payment_reference, submitted_at, paid_at").eq("user_id", userId).order("submitted_at", { ascending: false });
+  const result = await supabase.from("withdrawal_requests").select("id, internal_reference, method, status, amount, currency, destination, user_note, rejection_reason, payment_reference, submitted_at, paid_at").eq("user_id", userId).order("submitted_at", { ascending: false });
   return ensure(result.data, result.error, "withdrawal requests");
 }
+
+export async function getWithdrawalWallets(){const userId=await permittedUserId();const supabase=await createClient();const result=await supabase.from("wallet_accounts").select("id,currency,available_balance").eq("user_id",userId).gt("available_balance",0).order("currency");return ensure(result.data,result.error,"withdrawal wallets");}
 
 export async function getNotifications() {
   const userId = await permittedUserId();

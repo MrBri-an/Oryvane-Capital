@@ -191,3 +191,19 @@ The fixed roles are Super administrator, Finance administrator, Compliance admin
 `/admin/login` accepts email and password but successful password authentication is not sufficient for protected access. `/admin/mfa` handles TOTP enrollment, challenge, and verification. `/admin` and its users, payments, investments, withdrawals, and audit sections use real records and permission-aware navigation. Mutation controls are deliberately absent.
 
 The one-time first-admin process is documented in `docs/ADMIN_BOOTSTRAP.md`. It requires an existing Auth UUID, verified TOTP, an exact role, service-role server credentials, and explicit confirmation; it never runs automatically.
+
+## Phase 10B protected operations
+
+Phase 10B adds protected payment review and atomic crediting, controlled wallet adjustments and reversals, user restrictions and account status controls, in-app notifications, investment-plan management, and conservative user-investment lifecycle transitions. Each action validates input on the server, requires an active administrator with AAL2 and the operation-specific permission, performs a fresh TOTP challenge, invokes a protected database function, and appends an audit record.
+
+Read and mutation permissions are separate. `payments.manage`, `payments.reject`, `restrictions.change`, and `investments.manage` prevent read-only roles from receiving mutation authority through permissions used for RLS reads. The Read only auditor has no Phase 10B mutation permission.
+
+Payment approval locks the submission and wallet, creates one immutable wallet transaction, updates wallet figures, marks the payment credited, and appends the audit record in one transaction. A unique payment-transaction index and status checks prevent duplicate crediting.
+
+Investment earnings posting is intentionally not implemented. The approved requirements do not decide whether earnings become immediately withdrawable or how corrections affect wallet totals. Existing earnings remain visible but cannot be posted until that accounting rule is approved.
+
+## Phase 10C settlement and withdrawals
+
+Phase 10C supersedes the prior earnings blocker with approved accounting rules. Investment rejection, cancellation, and maturity release reserved principal exactly once without changing total balance. Realised earnings may be posted only after maturity and require both `investments.manage` and `finance.adjust`.
+
+User withdrawals reserve available funds atomically at submission. Administrators with `withdrawals.manage` can start review, approve, reject and release funds, mark processing, mark paid, or reverse a paid withdrawal. Each financial transition locks the request and wallet, validates current status, writes immutable transactions, and appends an audit entry. Destination values are masked in history tables.

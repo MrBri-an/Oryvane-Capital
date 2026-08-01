@@ -1,14 +1,16 @@
 import type { Metadata } from "next";
 import { ArrowUpFromLine } from "lucide-react";
 import { AdminSection } from "@/components/admin/section";
-import { DateValue, Label, Money } from "@/components/dashboard/format";
+import { OperationDialog } from "@/components/admin/operation-dialog";
+import { DateValue,Label,Money,Reference } from "@/components/dashboard/format";
+import { Field,Textarea } from "@/components/ui/form-controls";
 import { EmptyState } from "@/components/ui/states";
-import { Table, TableCell, TableContainer, TableHead } from "@/components/ui/table";
+import { Table,TableCell,TableContainer,TableHead } from "@/components/ui/table";
+import { transitionWithdrawalAction } from "@/server/admin/operation-actions";
+import { requireAdmin } from "@/server/admin/authorization";
 import { getAdminWithdrawals } from "@/server/admin/data";
-
-export const metadata: Metadata = { title: "Admin withdrawals", description: "Read-only withdrawal requests." };
-
-export default async function AdminWithdrawalsPage() {
-  const rows = await getAdminWithdrawals();
-  return <AdminSection title="Withdrawals" description="Read-only withdrawal requests. Approval and payment controls are intentionally unavailable.">{rows.length ? <TableContainer><Table><thead><tr><TableHead>User</TableHead><TableHead>Method</TableHead><TableHead>Amount</TableHead><TableHead>Status</TableHead><TableHead>Submitted</TableHead><TableHead>Paid</TableHead></tr></thead><tbody>{rows.map((row) => <tr key={row.id}><TableCell>{row.profiles?.full_name ?? "—"}</TableCell><TableCell><Label value={row.method} /></TableCell><TableCell><Money amount={row.amount} currency={row.currency} /></TableCell><TableCell><Label value={row.status} /></TableCell><TableCell><DateValue value={row.submitted_at} /></TableCell><TableCell><DateValue value={row.paid_at} /></TableCell></tr>)}</tbody></Table></TableContainer> : <EmptyState icon={ArrowUpFromLine} title="No withdrawal requests" description="No real withdrawal records are available." />}</AdminSection>;
-}
+import { maskSensitiveDestination } from "@/security/masking";
+export const metadata:Metadata={title:"Admin withdrawals",description:"Protected withdrawal review and settlement."};
+const operations:Record<string,Array<[string,string]>>={submitted:[["start_review","Start review"],["reject","Reject"]],under_review:[["approve","Approve"],["reject","Reject"]],approved:[["processing","Mark processing"],["reject","Reject"]],processing:[["paid","Mark paid"]],paid:[["reverse","Reverse"]]};
+const masked=maskSensitiveDestination;
+export default async function AdminWithdrawalsPage(){const[rows,context]=await Promise.all([getAdminWithdrawals(),requireAdmin()]);const canManage=context.permissions.includes("withdrawals.manage");return <AdminSection title="Withdrawals" description="Review and settle reserved withdrawals through audited status transitions.">{rows.length?<TableContainer><Table><thead><tr><TableHead>Reference</TableHead><TableHead>User</TableHead><TableHead>Method</TableHead><TableHead>Amount</TableHead><TableHead>Destination</TableHead><TableHead>Status</TableHead><TableHead>Submitted</TableHead><TableHead>Protected actions</TableHead></tr></thead><tbody>{rows.map(row=><tr key={row.id}><TableCell><Reference value={row.internal_reference}/></TableCell><TableCell>{row.profiles?.full_name??"—"}</TableCell><TableCell><Label value={row.method}/></TableCell><TableCell><Money amount={row.amount} currency={row.currency}/></TableCell><TableCell><span className="font-reference text-xs">{masked(row.method,row.destination)}</span></TableCell><TableCell><Label value={row.status}/>{row.rejection_reason?<span className="mt-1 block max-w-xs text-xs text-danger">{row.rejection_reason}</span>:null}</TableCell><TableCell><DateValue value={row.submitted_at}/></TableCell><TableCell><div className="flex min-w-56 flex-wrap gap-2">{canManage?(operations[row.status]??[]).map(([operation,label])=><OperationDialog key={operation} label={label} title={`${label} withdrawal`} description="The database verifies the current status, locks financial records, and appends an audit event." action={transitionWithdrawalAction} hidden={{id:row.id,operation}} tone={["reject","reverse"].includes(operation)?"danger":"secondary"}><Field label={["reject","reverse"].includes(operation)?"Required reason":"Review note (optional)"} htmlFor={`${operation}-${row.id}`}><Textarea id={`${operation}-${row.id}`} name="reason" required={["reject","reverse"].includes(operation)} maxLength={1000}/></Field></OperationDialog>):null}</div></TableCell></tr>)}</tbody></Table></TableContainer>:<EmptyState icon={ArrowUpFromLine} title="No withdrawal requests" description="No real withdrawal records are available."/>}</AdminSection>}

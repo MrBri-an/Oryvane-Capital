@@ -29,6 +29,11 @@ export async function loginAction(formData: FormData) {
   const supabase = await createClient();
   const { error } = await supabase.auth.signInWithPassword({ email: result.data.email, password: result.data.password });
   if (error) redirect(withMessage("/login", "error", "Email or password is incorrect."));
+  const { data: loginRestriction } = await supabase.from("account_restrictions").select("id").eq("type", "login").eq("active", true).lte("starts_at", new Date().toISOString()).or(`expires_at.is.null,expires_at.gt.${new Date().toISOString()}`).limit(1).maybeSingle();
+  if (loginRestriction) {
+    await supabase.auth.signOut({ scope: "local" });
+    redirect(withMessage("/login", "error", "Access is unavailable. Contact support if you believe this is an error."));
+  }
   redirect(safeRedirectPath(result.data.redirectTo));
 }
 

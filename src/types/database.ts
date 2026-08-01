@@ -1,4 +1,4 @@
-﻿export type Json =
+export type Json =
   | string
   | number
   | boolean
@@ -884,10 +884,12 @@ export type Database = {
       withdrawal_requests: {
         Row: {
           amount: number
+          client_request_id: string
           created_at: string
           currency: string
           destination: Json
           id: string
+          internal_reference: string
           method: Database["public"]["Enums"]["withdrawal_method"]
           paid_at: string | null
           payment_reference: string | null
@@ -898,14 +900,17 @@ export type Database = {
           submitted_at: string
           updated_at: string
           user_id: string
+          user_note: string | null
           wallet_account_id: string
         }
         Insert: {
           amount: number
+          client_request_id?: string
           created_at?: string
           currency: string
           destination: Json
           id?: string
+          internal_reference?: string
           method: Database["public"]["Enums"]["withdrawal_method"]
           paid_at?: string | null
           payment_reference?: string | null
@@ -916,14 +921,17 @@ export type Database = {
           submitted_at?: string
           updated_at?: string
           user_id: string
+          user_note?: string | null
           wallet_account_id: string
         }
         Update: {
           amount?: number
+          client_request_id?: string
           created_at?: string
           currency?: string
           destination?: Json
           id?: string
+          internal_reference?: string
           method?: Database["public"]["Enums"]["withdrawal_method"]
           paid_at?: string | null
           payment_reference?: string | null
@@ -934,6 +942,7 @@ export type Database = {
           submitted_at?: string
           updated_at?: string
           user_id?: string
+          user_note?: string | null
           wallet_account_id?: string
         }
         Relationships: [
@@ -965,6 +974,109 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      admin_apply_restriction: {
+        Args: {
+          p_expires_at?: string
+          p_reason: string
+          p_type: Database["public"]["Enums"]["restriction_type"]
+          p_user_id: string
+        }
+        Returns: string
+      }
+      admin_approve_and_credit_payment: {
+        Args: {
+          p_confirmed_amount: number
+          p_payment_id: string
+          p_reason: string
+        }
+        Returns: string
+      }
+      admin_complete_investment: {
+        Args: { p_investment_id: string; p_reason: string }
+        Returns: undefined
+      }
+      admin_mature_investment: {
+        Args: { p_investment_id: string; p_reason: string }
+        Returns: string
+      }
+      admin_post_investment_earnings: {
+        Args: {
+          p_amount: number
+          p_investment_id: string
+          p_period_end?: string
+          p_period_start?: string
+          p_reason: string
+          p_reference: string
+        }
+        Returns: string
+      }
+      admin_reject_payment: {
+        Args: { p_payment_id: string; p_reason: string }
+        Returns: undefined
+      }
+      admin_release_investment: {
+        Args: {
+          p_investment_id: string
+          p_reason: string
+          p_target_status: Database["public"]["Enums"]["investment_status"]
+        }
+        Returns: string
+      }
+      admin_remove_restriction: {
+        Args: { p_reason: string; p_restriction_id: string }
+        Returns: undefined
+      }
+      admin_save_investment_plan: {
+        Args: {
+          p_currency: string
+          p_duration_days: number
+          p_full_description: string
+          p_id: string
+          p_maximum: number
+          p_minimum: number
+          p_name: string
+          p_return_description: string
+          p_risk_level: string
+          p_short_description: string
+          p_slug: string
+          p_status: Database["public"]["Enums"]["plan_status"]
+          p_terms: string
+        }
+        Returns: string
+      }
+      admin_send_notification: {
+        Args: {
+          p_body: string
+          p_title: string
+          p_type: Database["public"]["Enums"]["notification_type"]
+          p_user_id: string
+        }
+        Returns: string
+      }
+      admin_set_account_status: {
+        Args: {
+          p_reason: string
+          p_status: Database["public"]["Enums"]["account_status"]
+          p_user_id: string
+        }
+        Returns: undefined
+      }
+      admin_start_payment_review: {
+        Args: { p_payment_id: string }
+        Returns: undefined
+      }
+      admin_transition_withdrawal: {
+        Args: { p_action: string; p_reason: string; p_withdrawal_id: string }
+        Returns: undefined
+      }
+      admin_update_investment_status: {
+        Args: {
+          p_investment_id: string
+          p_reason: string
+          p_status: Database["public"]["Enums"]["investment_status"]
+        }
+        Returns: undefined
+      }
       admin_user_has_permission: {
         Args: { admin_auth_user_id: string; permission_key: string }
         Returns: boolean
@@ -1003,6 +1115,17 @@ export type Database = {
       }
       submit_payment_for_review: {
         Args: { p_payment_id: string }
+        Returns: string
+      }
+      submit_withdrawal_request: {
+        Args: {
+          p_amount: number
+          p_currency: string
+          p_destination: Json
+          p_method: Database["public"]["Enums"]["withdrawal_method"]
+          p_request_id: string
+          p_user_note?: string
+        }
         Returns: string
       }
     }
