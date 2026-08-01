@@ -647,6 +647,7 @@ export type Database = {
           completed_at: string | null
           created_at: string
           currency: string
+          earnings_amount: number
           id: string
           matures_at: string | null
           plan_id: string
@@ -662,6 +663,7 @@ export type Database = {
           completed_at?: string | null
           created_at?: string
           currency: string
+          earnings_amount?: number
           id?: string
           matures_at?: string | null
           plan_id: string
@@ -677,6 +679,7 @@ export type Database = {
           completed_at?: string | null
           created_at?: string
           currency?: string
+          earnings_amount?: number
           id?: string
           matures_at?: string | null
           plan_id?: string
@@ -982,6 +985,10 @@ export type Database = {
           p_original_transaction_id?: string
           p_wallet_account_id: string
         }
+        Returns: string
+      }
+      request_user_investment: {
+        Args: { p_amount: number; p_currency: string; p_plan_id: string }
         Returns: string
       }
       submit_payment_for_review: {

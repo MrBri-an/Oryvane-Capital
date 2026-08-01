@@ -1,8 +1,14 @@
 import type { Metadata } from "next";
-import { InvestmentCard } from "@/components/public/investment-card";
+import { TrendingUp } from "lucide-react";
+
+import { InvestmentPlanCard } from "@/components/investments/investment-plan-card";
 import { PageHero, PageShell, PublicSection } from "@/components/public/page-shell";
 import { RiskNotice } from "@/components/public/risk-notice";
-import { Alert } from "@/components/ui/alert";
-import { investmentFrameworks } from "@/content/public-content";
-export const metadata: Metadata = { title: "Investment frameworks", description: "Review illustrative Oryvane Capital investment information frameworks and the risks that apply before product terms are approved." };
-export default function InvestmentsPage() { return <PageShell><PageHero eyebrow="Investment frameworks" title="Start with the shape of the decision." description="Explore how future investment information may be organised. These frameworks are not live products and contain no promised return, approved duration, fee, limit, or currency." /><RiskNotice /><PublicSection title="Frameworks under consideration" description="Each preview focuses on decision quality and disclosure structure rather than promotional performance claims."><div className="grid gap-4 md:grid-cols-3">{investmentFrameworks.map((framework) => <InvestmentCard key={framework.slug} framework={framework} />)}</div><Alert className="mt-10" title="No product is currently offered">Availability, suitability, underlying assets, geographic access, values, currencies, and final terms remain subject to approval.</Alert></PublicSection></PageShell>; }
+import { EmptyState } from "@/components/ui/states";
+import { getActiveInvestmentPlans } from "@/server/investments/data";
+
+export const metadata: Metadata = { title: "Investment plans", description: "Review currently active Oryvane Capital investment plans, terms, limits and risks." };
+export default async function InvestmentsPage() {
+  const plans = await getActiveInvestmentPlans();
+  return <PageShell><PageHero eyebrow="Investment plans" title="Decisions grounded in complete terms." description="Review currently active plans, funding limits, duration, return information and risk before requesting an investment." /><RiskNotice /><PublicSection title="Available plans" description="Only plans currently marked active are shown. Availability dates and participant limits may still apply.">{plans.length ? <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">{plans.map((plan) => <InvestmentPlanCard key={plan.id} plan={plan} />)}</div> : <EmptyState icon={TrendingUp} title="No active investment plans" description="There are currently no active plans available. No placeholder products are shown." />}</PublicSection></PageShell>;
+}

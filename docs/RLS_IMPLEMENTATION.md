@@ -62,6 +62,12 @@ Phase 8A keeps draft editing under the existing ownership policy and adds `submi
 
 Execution is revoked from `public` and `anon` and granted only to `authenticated`. Authenticated table privileges still exclude `internal_reference`, `status`, `submitted_at`, approval, review, confirmed amount, and crediting columns. Bitcoin hashes are protected by a case-insensitive partial unique index; bank references remain non-unique.
 
+## Investment request transition
+
+Phase 9 adds `request_user_investment(uuid, numeric, text)`. This `SECURITY DEFINER` function uses an empty fixed `search_path`, derives ownership from `auth.uid()`, requires an active account, checks active restrictions, locks the plan and wallet, validates plan limits and availability, prevents duplicate open requests, and atomically reserves available funds with an immutable allocation transaction.
+
+Execution is revoked from `public` and `anon` and granted only to `authenticated`. Users retain no table insert/update privilege on investments, wallets, transactions, earnings, status, start dates, or maturity dates. Authenticated plan reads now also permit a user to read plans referenced by their own investments so historical plan names remain available after a plan is paused, closed, or archived; this does not make those plans public.
+
 ## Tests
 
 `supabase/tests/phase6_rls.sql` uses transaction-scoped identities and records and ends with `rollback`. It covers:
@@ -86,3 +92,5 @@ supabase test db
 Never run this test file against a linked remote project.
 
 `supabase/tests/phase8a_payment_submission.sql` is also transaction-scoped and covers draft submission, ownership, evidence requirements, duplicate Bitcoin hashes, account status, server-generated references, and protected review fields. Run it only against a local disposable database.
+
+`supabase/tests/phase9_investment_requests.sql` covers atomic fund reservation, invested totals, immutable allocation records, duplicate requests, limits, currency, account status, and forbidden direct writes. It is transaction-scoped and must only run against a local disposable database.

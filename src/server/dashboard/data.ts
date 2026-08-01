@@ -65,7 +65,7 @@ export async function getOverviewData() {
 export async function getInvestments() {
   const userId = await permittedUserId();
   const supabase = await createClient();
-  const result = await supabase.from("user_investments").select("id, amount, currency, status, started_at, matures_at, created_at").eq("user_id", userId).order("created_at", { ascending: false });
+  const result = await supabase.from("user_investments").select("id, amount, earnings_amount, currency, status, started_at, matures_at, created_at, investment_plans(name, slug), investment_updates(update_type, amount, currency, description, created_at)").eq("user_id", userId).order("created_at", { ascending: false });
   return ensure(result.data, result.error, "investments");
 }
 
