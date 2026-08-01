@@ -182,3 +182,12 @@ No administrator should be able to:
 5. Expose private receipts to unauthorised roles
 6. Bypass reauthentication for sensitive actions
 7. Change their own role or permissions unless explicitly authorised through a controlled process
+# Phase 10A implementation
+
+The admin control centre is separate from the user dashboard and is read-only in Phase 10A. Every protected route performs server-side authorization in its layout and each data service repeats the required permission check. Access requires an authenticated Supabase user, an active `admin_users` record, an assigned fixed role, `portal.access`, and an `aal2` session obtained with Supabase TOTP MFA.
+
+The fixed roles are Super administrator, Finance administrator, Compliance administrator, Support administrator, Content administrator, and Read only auditor. Their permission mappings are installed as catalogue data; no Auth user or administrator is created by the migration.
+
+`/admin/login` accepts email and password but successful password authentication is not sufficient for protected access. `/admin/mfa` handles TOTP enrollment, challenge, and verification. `/admin` and its users, payments, investments, withdrawals, and audit sections use real records and permission-aware navigation. Mutation controls are deliberately absent.
+
+The one-time first-admin process is documented in `docs/ADMIN_BOOTSTRAP.md`. It requires an existing Auth UUID, verified TOTP, an exact role, service-role server credentials, and explicit confirmation; it never runs automatically.

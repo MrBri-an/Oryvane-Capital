@@ -6,6 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "admin:bootstrap": "node scripts/bootstrap-admin.mjs",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit"
   },

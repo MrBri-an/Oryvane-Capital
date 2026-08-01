@@ -969,10 +969,16 @@ export type Database = {
         Args: { admin_auth_user_id: string; permission_key: string }
         Returns: boolean
       }
+      bootstrap_first_admin: {
+        Args: { p_role_name: string; p_user_id: string }
+        Returns: string
+      }
+      get_current_admin_context: { Args: never; Returns: Json }
       has_admin_permission: {
         Args: { permission_key: string; require_aal2?: boolean }
         Returns: boolean
       }
+      is_current_user_active_admin: { Args: never; Returns: boolean }
       perform_wallet_adjustment: {
         Args: {
           p_adjustment_amount: number
@@ -986,6 +992,10 @@ export type Database = {
           p_wallet_account_id: string
         }
         Returns: string
+      }
+      record_admin_auth_event: {
+        Args: { p_event_type: string; p_severity?: string }
+        Returns: undefined
       }
       request_user_investment: {
         Args: { p_amount: number; p_currency: string; p_plan_id: string }

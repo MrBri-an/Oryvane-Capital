@@ -39,6 +39,12 @@ Anonymous users can only select investment plans whose status is `active`. No an
 
 Admin RLS policies use this helper for read access. No admin table mutation policies are exposed to browser roles. The internal explicit-user helper is revoked from `anon` and `authenticated`.
 
+Phase 10A adds the fixed system role and permission catalogue plus three narrowly scoped helpers. `is_current_user_active_admin()` is an AAL1-safe identity check used only to decide whether an authenticated user may proceed to MFA. `get_current_admin_context()` returns the caller's role and permissions only at AAL2. `record_admin_auth_event()` accepts only an allowlist of authentication event types and requires an active admin. All are `SECURITY DEFINER` only where required, use an empty fixed `search_path`, and have execution revoked from `public` and `anon`.
+
+The service-role-only `bootstrap_first_admin(uuid, text)` is not executable by browser roles. It accepts an exact fixed role, requires an existing Auth user and profile, refuses to run after any admin record exists, and writes the admin record and append-only audit event in one transaction. TOTP enrollment is additionally verified by the server-only bootstrap script before calling it.
+
+Admin page services require AAL2 and a specific permission before querying. RLS independently repeats the active-admin, assigned-permission, and AAL2 requirements. The Phase 10A application exposes no admin insert, update, delete, approval, crediting, restriction, or status operation.
+
 ## Storage
 
 Both buckets are private:

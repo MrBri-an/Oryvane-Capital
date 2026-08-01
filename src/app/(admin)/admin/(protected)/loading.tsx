@@ -1,0 +1,2 @@
+import { Skeleton } from "@/components/ui/skeleton";
+export default function AdminLoading() { return <div role="status" aria-label="Loading admin data"><Skeleton className="h-4 w-36" /><Skeleton className="mt-4 h-10 w-72 max-w-full" /><div className="mt-10 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">{Array.from({ length: 4 }, (_, i) => <Skeleton key={i} className="h-32" />)}</div><Skeleton className="mt-6 h-72" /><span className="sr-only">Loading admin data</span></div>; }
