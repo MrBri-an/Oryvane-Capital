@@ -79,7 +79,7 @@ export async function getTransactions() {
 export async function getDeposits() {
   const userId = await permittedUserId();
   const supabase = await createClient();
-  const result = await supabase.from("payment_submissions").select("id, method, status, submitted_amount, confirmed_amount, currency, external_reference, submitted_at, created_at").eq("user_id", userId).order("created_at", { ascending: false });
+  const result = await supabase.from("payment_submissions").select("id, internal_reference, method, status, submitted_amount, currency, external_reference, rejection_reason, submitted_at, created_at").eq("user_id", userId).order("created_at", { ascending: false });
   return ensure(result.data, result.error, "deposit submissions");
 }
 

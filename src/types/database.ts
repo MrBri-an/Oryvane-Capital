@@ -485,6 +485,7 @@ export type Database = {
           currency: string
           external_reference: string | null
           id: string
+          internal_reference: string
           method: Database["public"]["Enums"]["payment_method"]
           receipt_path: string | null
           rejection_reason: string | null
@@ -496,6 +497,7 @@ export type Database = {
           submitted_at: string | null
           updated_at: string
           user_id: string
+          user_note: string | null
         }
         Insert: {
           confirmed_amount?: number | null
@@ -504,6 +506,7 @@ export type Database = {
           currency: string
           external_reference?: string | null
           id?: string
+          internal_reference?: string
           method: Database["public"]["Enums"]["payment_method"]
           receipt_path?: string | null
           rejection_reason?: string | null
@@ -515,6 +518,7 @@ export type Database = {
           submitted_at?: string | null
           updated_at?: string
           user_id: string
+          user_note?: string | null
         }
         Update: {
           confirmed_amount?: number | null
@@ -523,6 +527,7 @@ export type Database = {
           currency?: string
           external_reference?: string | null
           id?: string
+          internal_reference?: string
           method?: Database["public"]["Enums"]["payment_method"]
           receipt_path?: string | null
           rejection_reason?: string | null
@@ -534,6 +539,7 @@ export type Database = {
           submitted_at?: string | null
           updated_at?: string
           user_id?: string
+          user_note?: string | null
         }
         Relationships: [
           {
@@ -976,6 +982,10 @@ export type Database = {
           p_original_transaction_id?: string
           p_wallet_account_id: string
         }
+        Returns: string
+      }
+      submit_payment_for_review: {
+        Args: { p_payment_id: string }
         Returns: string
       }
     }

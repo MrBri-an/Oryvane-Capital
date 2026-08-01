@@ -56,6 +56,12 @@ Users can only insert, select, update, and delete objects under their own folder
 
 Database policies cannot safely validate file signatures or extensions. Future upload server operations must validate content type, extension, signature, size, and generated object names before upload.
 
+## Payment submission transition
+
+Phase 8A keeps draft editing under the existing ownership policy and adds `submit_payment_for_review(uuid)` for the protected status transition. The `SECURITY DEFINER` function has an empty fixed `search_path`, verifies `auth.uid()`, requires an active profile, locks the caller-owned draft, validates method-specific evidence and storage ownership, and changes only `status` and `submitted_at`.
+
+Execution is revoked from `public` and `anon` and granted only to `authenticated`. Authenticated table privileges still exclude `internal_reference`, `status`, `submitted_at`, approval, review, confirmed amount, and crediting columns. Bitcoin hashes are protected by a case-insensitive partial unique index; bank references remain non-unique.
+
 ## Tests
 
 `supabase/tests/phase6_rls.sql` uses transaction-scoped identities and records and ends with `rollback`. It covers:
@@ -78,3 +84,5 @@ supabase test db
 ```
 
 Never run this test file against a linked remote project.
+
+`supabase/tests/phase8a_payment_submission.sql` is also transaction-scoped and covers draft submission, ownership, evidence requirements, duplicate Bitcoin hashes, account status, server-generated references, and protected review fields. Run it only against a local disposable database.
