@@ -1,0 +1,2 @@
+import { TriangleAlert } from "lucide-react";
+export function RiskNotice() { return <aside className="border-y border-warning/25 bg-warning/5"><div className="mx-auto flex max-w-[90rem] gap-3 px-[var(--space-page)] py-5 text-sm leading-6"><TriangleAlert aria-hidden className="mt-0.5 size-5 shrink-0 text-warning" /><p><strong className="text-foreground">Capital is at risk.</strong> <span className="text-muted">Investment values can rise or fall, and returns are not guaranteed. Review all relevant terms and risks before making a decision.</span></p></div></aside>; }

@@ -1,0 +1,9 @@
+import type { ReactNode } from "react";
+import { PageTransition, ScrollReveal } from "@/components/motion/motion-system";
+import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
+
+export function PageShell({ children }: { children: ReactNode }) { return <PageTransition><main>{children}</main></PageTransition>; }
+export function Container({ children, className }: { children: ReactNode; className?: string }) { return <div className={cn("mx-auto w-full max-w-[90rem] px-[var(--space-page)]", className)}>{children}</div>; }
+export function PageHero({ eyebrow, title, description, children }: { eyebrow: string; title: string; description: string; children?: ReactNode }) { return <section className="overflow-hidden border-b border-border bg-[radial-gradient(circle_at_80%_20%,color-mix(in_srgb,var(--emerald)_10%,transparent),transparent_35%)] py-16 sm:py-24 lg:py-32"><Container><Badge tone="gold">{eyebrow}</Badge><h1 className="mt-6 max-w-5xl text-4xl font-semibold tracking-[-0.045em] text-balance sm:text-6xl lg:text-7xl">{title}</h1><p className="mt-6 max-w-2xl text-base leading-7 text-muted sm:text-lg">{description}</p>{children && <div className="mt-8">{children}</div>}</Container></section>; }
+export function PublicSection({ eyebrow, title, description, children, className }: { eyebrow?: string; title: string; description?: string; children: ReactNode; className?: string }) { return <section className={cn("py-16 sm:py-24", className)}><Container><ScrollReveal>{eyebrow && <p className="text-xs font-semibold uppercase tracking-[0.18em] text-gold">{eyebrow}</p>}<h2 className="mt-3 max-w-3xl text-3xl font-semibold tracking-[-0.035em] text-balance sm:text-5xl">{title}</h2>{description && <p className="mt-5 max-w-2xl text-base leading-7 text-muted">{description}</p>}</ScrollReveal><div className="mt-10 sm:mt-14">{children}</div></Container></section>; }

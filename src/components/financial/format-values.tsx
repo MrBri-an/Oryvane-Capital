@@ -1,0 +1,4 @@
+import { cn } from "@/lib/utils";
+
+export function CurrencyValue({ value, currency, locale = "en", className, maximumFractionDigits }: { value: number; currency: string; locale?: string; className?: string; maximumFractionDigits?: number }) { return <span className={cn("font-financial tabular-nums", className)}>{new Intl.NumberFormat(locale, { style: "currency", currency, maximumFractionDigits }).format(value)}</span>; }
+export function PercentageValue({ value, locale = "en", showSign = true, className }: { value: number; locale?: string; showSign?: boolean; className?: string }) { const formatted = new Intl.NumberFormat(locale, { style: "percent", signDisplay: showSign ? "exceptZero" : "auto", maximumFractionDigits: 2 }).format(value / 100); return <span className={cn("font-financial tabular-nums", value > 0 && "text-emerald-strong", value < 0 && "text-danger", className)}>{formatted}</span>; }

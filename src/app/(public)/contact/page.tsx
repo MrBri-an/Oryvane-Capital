@@ -1,0 +1,9 @@
+import type { Metadata } from "next";
+import { Clock3, FileQuestion, ShieldAlert } from "lucide-react";
+import Link from "next/link";
+import { FeatureGrid } from "@/components/public/feature-grid";
+import { PageHero, PageShell, PublicSection } from "@/components/public/page-shell";
+import { Alert } from "@/components/ui/alert";
+import { buttonVariants } from "@/components/ui/button";
+export const metadata: Metadata = { title: "Contact", description: "Find guidance for contacting Oryvane Capital and reviewing common platform, security, and risk questions." };
+export default function ContactPage() { return <PageShell><PageHero eyebrow="Contact" title="Start with the right context." description="Official support channels, service regions, and response times are still awaiting approval. No unverified email address, phone number, or office location is presented here." /><PublicSection title="Before you enquire"><FeatureGrid items={[{ icon: FileQuestion, title: "General questions", description: "Review the FAQ for current answers about availability, workflows, and unresolved product details." }, { icon: ShieldAlert, title: "Security concerns", description: "Never send passwords, verification codes, private keys, or sensitive payment details through an unverified channel." }, { icon: Clock3, title: "Support availability", description: "Operating hours and expected response times will be published when official support channels are approved." }]} /><Alert className="mt-10" tone="warning" title="Contact form not yet active">A submission form would require an approved destination, validation, abuse protection, and privacy handling. Those services are not implemented in this phase.</Alert><div className="mt-8 flex flex-wrap gap-3"><Link href="/faq" className={buttonVariants()}>Read the FAQ</Link><Link href="/security" className={buttonVariants({ variant: "secondary" })}>Security guidance</Link></div></PublicSection></PageShell>; }

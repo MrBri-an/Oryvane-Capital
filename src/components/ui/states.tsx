@@ -1,0 +1,5 @@
+import type { LucideIcon } from "lucide-react";
+import { LoaderCircle } from "lucide-react";
+import type { ReactNode } from "react";
+export function EmptyState({ icon: Icon, title, description, action }: { icon: LucideIcon; title: string; description: string; action?: ReactNode }) { return <section className="grid min-h-56 place-items-center rounded-xl border border-dashed border-border p-6 text-center"><div><span className="mx-auto grid size-11 place-items-center rounded-full bg-white/5 text-gold"><Icon aria-hidden className="size-5" /></span><h3 className="mt-4 text-lg font-semibold">{title}</h3><p className="mx-auto mt-2 max-w-sm text-sm text-muted">{description}</p>{action && <div className="mt-5">{action}</div>}</div></section>; }
+export function LoadingState({ label = "Loading" }: { label?: string }) { return <div role="status" className="flex min-h-32 items-center justify-center gap-3 text-sm text-muted"><LoaderCircle aria-hidden className="size-5 animate-spin motion-reduce:animate-none" /><span>{label}</span></div>; }
