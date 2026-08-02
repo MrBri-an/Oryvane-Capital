@@ -2,6 +2,10 @@
 
 Review date: 1 August 2026
 
+## Phase 12A recheck — 2 August 2026
+
+`npm audit --json` now reports zero vulnerabilities and `npm view next version` still reports 16.2.12 as the latest stable release. The installed Next dependency tree is unchanged (`postcss@8.4.31`, `sharp@0.34.5`), so no package was upgraded and no override was introduced. This change in audit outcome reflects registry advisory metadata, not a changed transitive package. Continue monitoring the four previously recorded advisories and re-run the audit before promotion; a renewed high-severity result blocks production.
+
 ## Outcome
 
 The current dependency advisories cannot be safely eliminated with a compatible stable Next.js update. Next.js 16.2.12 is the latest stable registry release, but it declares PostCSS 8.4.31 and optional Sharp `^0.34.5`. The patched dependency lines are PostCSS 8.5.18 or newer and Sharp 0.35.0 or newer.

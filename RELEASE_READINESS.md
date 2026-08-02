@@ -1,6 +1,6 @@
 # Oryvane Capital Release Readiness
 
-Assessment date: 2 August 2026
+Assessment date: 2 August 2026 — Phase 12A update
 
 ## Verdict: Not ready
 
@@ -8,11 +8,10 @@ The application has strong database authorization, atomic accounting foundations
 
 ## Production blockers
 
-1. **Unresolved high dependency advisories.** Next.js 16.2.12 carries affected PostCSS and Sharp/libvips versions. Upgrade to a compatible stable patched Next.js release and rerun all checks.
+1. **Dependency provenance requires monitoring.** The current npm advisory database reports zero vulnerabilities, while the installed Next transitive versions remain unchanged from the prior findings. Any renewed high-severity advisory blocks launch.
 2. **Database security tests pending.** Start a disposable local Supabase stack and run every pgTAP suite. Do not substitute linked-project mutation tests.
 3. **Authenticated end-to-end coverage missing.** Create approved disposable non-production users/admins and verify registration confirmation, login/logout, account states, deposits, investment reservation/settlement, withdrawals, TOTP MFA, permission boundaries, and audited admin operations.
-4. **Rate limiting absent.** Add deployment-level limits for authentication, recovery, payment, investment, withdrawal, and administrator mutation endpoints.
-5. **Receipt malware controls incomplete.** Select and integrate production malware scanning/quarantine before accepting external files.
+4. **Receipt scanner not operationally confirmed.** Uploads now enter private quarantine and database gates prevent review before a clean scan, but production scanner credentials, monitoring, and failure drills are not confirmed.
 6. **Operational configuration incomplete.** Confirm exact production origins, Supabase redirect URLs, email delivery, bank/Bitcoin configuration, monitoring, alerting, backups, retention, incident response, legal content, support channels, and administrator bootstrap approvals.
 
 ## Required verification before launch
@@ -35,4 +34,4 @@ The application has strong database authorization, atomic accounting foundations
 - Static review confirms RLS on all exposed public tables and private Storage policies
 - No tracked secrets, no real administrator creation, and no linked financial mutation during QA
 
-This verdict can move to **Conditionally ready** only after dependency, local database-test, rate-limit, malware-control, and authenticated-browser blockers are closed. **Ready** additionally requires completed operational/legal configuration and independent security sign-off.
+Phase 12A adds durable database-backed throttling, Host/Origin checks, nonce CSP, receipt quarantine/scan gates, structured redacted security logging, a minimal health endpoint, and safely skipped authenticated staging suites. The verdict remains **Not ready** until local database tests, operational malware scanning, authenticated staging runs, monitoring/backups, and legal/company information are confirmed.

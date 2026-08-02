@@ -7,6 +7,8 @@ const serverEnvironmentSchema = z.object({
   NEXT_PUBLIC_SUPABASE_ANON_KEY: z.string().min(1),
   NEXT_PUBLIC_SITE_URL: z.url(),
   SUPABASE_SERVICE_ROLE_KEY: z.string().min(1).optional(),
+  RECEIPT_SCANNER_URL: z.url().optional(),
+  RECEIPT_SCANNER_API_KEY: z.string().min(16).optional(),
 });
 
 export type ServerEnvironment = z.infer<typeof serverEnvironmentSchema>;

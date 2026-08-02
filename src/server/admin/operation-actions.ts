@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
 import { requireAdminPermission } from "@/server/admin/authorization";
+import { enforceRateLimit } from "@/security/request";
 
 export type OperationState = { ok: boolean; message: string };
 const uuid = z.string().uuid();
@@ -31,7 +32,7 @@ async function reauthenticate(permission: string, code: string) {
 }
 
 async function run(operation: () => Promise<void>, paths: string[]): Promise<OperationState> {
-  try { await operation(); paths.forEach((path) => revalidatePath(path)); return { ok: true, message: "Operation completed and audited." }; }
+  try { await enforceRateLimit({ scope: "admin.financial", limit: 20, windowSeconds: 900 }); await operation(); paths.forEach((path) => revalidatePath(path)); return { ok: true, message: "Operation completed and audited." }; }
   catch { return { ok: false, message: "The protected operation could not be completed. Check the current status and your authorization." }; }
 }
 

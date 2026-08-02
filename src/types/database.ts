@@ -1,4 +1,4 @@
-export type Json =
+﻿export type Json =
   | string
   | number
   | boolean
@@ -11,6 +11,31 @@ export type Database = {
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
     PostgrestVersion: "14.15"
+  }
+  graphql_public: {
+    Tables: {
+      [_ in never]: never
+    }
+    Views: {
+      [_ in never]: never
+    }
+    Functions: {
+      graphql: {
+        Args: {
+          extensions?: Json
+          operationName?: string
+          query?: string
+          variables?: Json
+        }
+        Returns: Json
+      }
+    }
+    Enums: {
+      [_ in never]: never
+    }
+    CompositeTypes: {
+      [_ in never]: never
+    }
   }
   public: {
     Tables: {
@@ -488,6 +513,9 @@ export type Database = {
           internal_reference: string
           method: Database["public"]["Enums"]["payment_method"]
           receipt_path: string | null
+          receipt_scan_status: Database["public"]["Enums"]["receipt_scan_status"]
+          receipt_scanned_at: string | null
+          receipt_scanner: string | null
           rejection_reason: string | null
           reviewed_at: string | null
           reviewed_by: string | null
@@ -509,6 +537,9 @@ export type Database = {
           internal_reference?: string
           method: Database["public"]["Enums"]["payment_method"]
           receipt_path?: string | null
+          receipt_scan_status?: Database["public"]["Enums"]["receipt_scan_status"]
+          receipt_scanned_at?: string | null
+          receipt_scanner?: string | null
           rejection_reason?: string | null
           reviewed_at?: string | null
           reviewed_by?: string | null
@@ -530,6 +561,9 @@ export type Database = {
           internal_reference?: string
           method?: Database["public"]["Enums"]["payment_method"]
           receipt_path?: string | null
+          receipt_scan_status?: Database["public"]["Enums"]["receipt_scan_status"]
+          receipt_scanned_at?: string | null
+          receipt_scanner?: string | null
           rejection_reason?: string | null
           reviewed_at?: string | null
           reviewed_by?: string | null
@@ -597,6 +631,27 @@ export type Database = {
           status?: Database["public"]["Enums"]["account_status"]
           terms_accepted_at?: string | null
           updated_at?: string
+        }
+        Relationships: []
+      }
+      rate_limit_counters: {
+        Row: {
+          key_hash: string
+          request_count: number
+          scope: string
+          window_started_at: string
+        }
+        Insert: {
+          key_hash: string
+          request_count: number
+          scope: string
+          window_started_at: string
+        }
+        Update: {
+          key_hash?: string
+          request_count?: number
+          scope?: string
+          window_started_at?: string
         }
         Relationships: []
       }
@@ -1085,6 +1140,15 @@ export type Database = {
         Args: { p_role_name: string; p_user_id: string }
         Returns: string
       }
+      consume_rate_limit: {
+        Args: {
+          p_key_hash: string
+          p_limit: number
+          p_scope: string
+          p_window_seconds: number
+        }
+        Returns: boolean
+      }
       get_current_admin_context: { Args: never; Returns: Json }
       has_admin_permission: {
         Args: { permission_key: string; require_aal2?: boolean }
@@ -1107,6 +1171,14 @@ export type Database = {
       }
       record_admin_auth_event: {
         Args: { p_event_type: string; p_severity?: string }
+        Returns: undefined
+      }
+      record_payment_receipt_scan: {
+        Args: {
+          p_payment_id: string
+          p_scanner: string
+          p_status: Database["public"]["Enums"]["receipt_scan_status"]
+        }
         Returns: undefined
       }
       request_user_investment: {
@@ -1160,6 +1232,12 @@ export type Database = {
         | "credited"
         | "cancelled"
       plan_status: "draft" | "active" | "paused" | "closed" | "archived"
+      receipt_scan_status:
+        | "quarantined"
+        | "clean"
+        | "infected"
+        | "failed"
+        | "unavailable"
       restriction_type:
         | "deposit"
         | "withdrawal"
@@ -1316,6 +1394,9 @@ export type CompositeTypes<
     : never
 
 export const Constants = {
+  graphql_public: {
+    Enums: {},
+  },
   public: {
     Enums: {
       account_status: [
@@ -1351,6 +1432,13 @@ export const Constants = {
         "cancelled",
       ],
       plan_status: ["draft", "active", "paused", "closed", "archived"],
+      receipt_scan_status: [
+        "quarantined",
+        "clean",
+        "infected",
+        "failed",
+        "unavailable",
+      ],
       restriction_type: [
         "deposit",
         "withdrawal",

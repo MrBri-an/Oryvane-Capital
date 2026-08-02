@@ -6,6 +6,8 @@ import { getPaymentConfiguration } from "@/config/payments";
 import { createClient } from "@/lib/supabase/server";
 import { getDashboardIdentity } from "@/server/dashboard/data";
 import { paymentFormSchema, RECEIPT_TYPES } from "@/validation/payment";
+import { enforceRateLimit } from "@/security/request";
+import { scanPaymentReceipt } from "@/server/payments/scanning";
 
 export type PaymentActionState = { status: "idle" | "success" | "error"; message?: string; reference?: string };
 export const initialPaymentState: PaymentActionState = { status: "idle" };
@@ -36,6 +38,7 @@ async function validateFile(file: File) {
 }
 
 export async function submitPaymentAction(_previous: PaymentActionState, formData: FormData): Promise<PaymentActionState> {
+  await enforceRateLimit({ scope: "payment.submit", limit: 5, windowSeconds: 3600 });
   const identity = await getDashboardIdentity();
   if (!identity.profile || identity.profile.status !== "active") return { status: "error", message: "Payment submission is unavailable for this account." };
 
@@ -58,14 +61,16 @@ export async function submitPaymentAction(_previous: PaymentActionState, formDat
   if (insertError) return { status: "error", message: insertError.code === "23505" ? "This Bitcoin transaction hash has already been submitted." : "The payment draft could not be created." };
 
   let receiptPath: string | null = null;
+  let scanStatus: "clean" | "infected" | "failed" | "unavailable" | null = null;
   if (parsed.data.receipt) {
     const extension = parsed.data.receipt.name.toLowerCase().split(".").pop();
-    receiptPath = `${identity.user.id}/${submissionId}/receipt.${extension}`;
+    receiptPath = `${identity.user.id}/${submissionId}/quarantine/receipt.${extension}`;
     const bytes = await parsed.data.receipt.arrayBuffer();
     const { error: uploadError } = await supabase.storage.from("payment-receipts").upload(receiptPath, bytes, { contentType: parsed.data.receipt.type, upsert: false });
     if (uploadError) return { status: "error", message: "The receipt could not be uploaded. Your draft was not submitted for review." };
     const { error: pathError } = await supabase.from("payment_submissions").update({ receipt_path: receiptPath }).eq("id", submissionId).eq("user_id", identity.user.id).eq("status", "draft");
     if (pathError) { await supabase.storage.from("payment-receipts").remove([receiptPath]); return { status: "error", message: "The receipt could not be attached. Your draft was not submitted for review." }; }
+    scanStatus = await scanPaymentReceipt(submissionId, receiptPath, bytes, parsed.data.receipt.type);
   }
 
   const { data: internalReference, error: submitError } = await supabase.rpc("submit_payment_for_review", { p_payment_id: submissionId });
@@ -79,5 +84,5 @@ export async function submitPaymentAction(_previous: PaymentActionState, formDat
 
   revalidatePath("/dashboard/deposits");
   revalidatePath("/dashboard");
-  return { status: "success", message: "Payment submitted for review.", reference: internalReference };
+  return { status: "success", message: scanStatus && scanStatus !== "clean" ? "Payment submitted, but its receipt remains quarantined until malware scanning succeeds." : "Payment submitted for review.", reference: internalReference };
 }

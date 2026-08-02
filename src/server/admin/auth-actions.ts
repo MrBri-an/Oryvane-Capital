@@ -4,11 +4,13 @@ import { redirect } from "next/navigation";
 import { z } from "zod";
 
 import { createClient } from "@/lib/supabase/server";
+import { enforceRateLimit } from "@/security/request";
 
 const loginSchema = z.object({ email: z.email(), password: z.string().min(1).max(72) });
 function value(data: FormData, key: string) { const item = data.get(key); return typeof item === "string" ? item : ""; }
 
 export async function adminLoginAction(formData: FormData) {
+  await enforceRateLimit({ scope: "admin.login", limit: 8, windowSeconds: 900, identifier: value(formData, "email") });
   const parsed = loginSchema.safeParse({ email: value(formData, "email"), password: value(formData, "password") });
   if (!parsed.success) redirect("/admin/login?error=Unable+to+sign+in.");
   const supabase = await createClient();

@@ -4,12 +4,14 @@ import { revalidatePath } from "next/cache";
 
 import { createClient } from "@/lib/supabase/server";
 import { getDashboardIdentity } from "@/server/dashboard/data";
+import { enforceRateLimit } from "@/security/request";
 import { investmentRequestSchema } from "@/validation/investment";
 
 export type InvestmentActionState = { status: "idle" | "success" | "error"; message?: string; investmentId?: string };
 export const initialInvestmentState: InvestmentActionState = { status: "idle" };
 
 export async function requestInvestmentAction(_previous: InvestmentActionState, formData: FormData): Promise<InvestmentActionState> {
+  await enforceRateLimit({ scope: "investment.request", limit: 8, windowSeconds: 3600 });
   const identity = await getDashboardIdentity();
   if (!identity.profile || identity.profile.status !== "active") return { status: "error", message: "Investment requests are unavailable for this account." };
   const parsed = investmentRequestSchema.safeParse({ planId: formData.get("planId"), amount: formData.get("amount"), currency: formData.get("currency") });

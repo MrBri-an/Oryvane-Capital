@@ -5,12 +5,14 @@ import { redirect } from "next/navigation";
 import { getServerEnvironment } from "@/config/env";
 import { createClient } from "@/lib/supabase/server";
 import { safeRedirectPath } from "@/security/redirects";
+import { enforceRateLimit } from "@/security/request";
 import { forgotPasswordSchema, loginSchema, registrationSchema, resetPasswordSchema } from "@/validation/auth";
 
 function value(formData: FormData, name: string) { const item = formData.get(name); return typeof item === "string" ? item : ""; }
 function withMessage(path: string, type: "error" | "success", message: string) { return `${path}?${new URLSearchParams({ [type]: message })}`; }
 
 export async function registerAction(formData: FormData) {
+  await enforceRateLimit({ scope: "auth.register", limit: 5, windowSeconds: 3600, identifier: value(formData, "email") });
   const result = registrationSchema.safeParse({ fullName: value(formData, "fullName"), email: value(formData, "email"), phone: value(formData, "phone"), country: value(formData, "country"), password: value(formData, "password"), passwordConfirmation: value(formData, "passwordConfirmation"), termsAccepted: formData.get("termsAccepted"), privacyAccepted: formData.get("privacyAccepted"), riskAccepted: formData.get("riskAccepted") });
   if (!result.success) redirect(withMessage("/register", "error", result.error.issues[0]?.message ?? "Review your details and try again."));
 
@@ -24,6 +26,7 @@ export async function registerAction(formData: FormData) {
 }
 
 export async function loginAction(formData: FormData) {
+  await enforceRateLimit({ scope: "auth.login", limit: 10, windowSeconds: 900, identifier: value(formData, "email") });
   const result = loginSchema.safeParse({ email: value(formData, "email"), password: value(formData, "password"), redirectTo: value(formData, "redirectTo") });
   if (!result.success) redirect(withMessage("/login", "error", "Email or password is incorrect."));
   const supabase = await createClient();
@@ -38,6 +41,7 @@ export async function loginAction(formData: FormData) {
 }
 
 export async function forgotPasswordAction(formData: FormData) {
+  await enforceRateLimit({ scope: "auth.recovery", limit: 5, windowSeconds: 3600, identifier: value(formData, "email") });
   const result = forgotPasswordSchema.safeParse({ email: value(formData, "email") });
   if (result.success) {
     const env = getServerEnvironment();

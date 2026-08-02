@@ -1,0 +1,11 @@
+begin;
+select plan(7);
+select has_table('public','rate_limit_counters','durable rate-limit table exists');
+select row_security_active('public.rate_limit_counters'::regclass,'rate-limit table has RLS');
+select function_privs_are('public','consume_rate_limit',array['text','text','integer','integer'],null,array['EXECUTE'],'anonymous limiter has only execute');
+select ok(public.consume_rate_limit('auth.login',repeat('a',64),2,60),'first request allowed');
+select ok(public.consume_rate_limit('auth.login',repeat('a',64),2,60),'second request allowed');
+select is(public.consume_rate_limit('auth.login',repeat('a',64),2,60),false,'limit is enforced');
+select throws_ok($$select public.record_payment_receipt_scan(gen_random_uuid(),'clean','test')$$,'42501','not authorized','normal SQL caller cannot record scan result');
+select * from finish();
+rollback;
