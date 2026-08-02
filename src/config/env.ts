@@ -9,6 +9,8 @@ const serverEnvironmentSchema = z.object({
   SUPABASE_SERVICE_ROLE_KEY: z.string().min(1).optional(),
   RECEIPT_SCANNER_URL: z.url().optional(),
   RECEIPT_SCANNER_API_KEY: z.string().min(16).optional(),
+  INITIAL_SUPER_ADMIN_EMAIL: z.email().optional(),
+  ADMIN_SETUP_TOKEN: z.string().min(32).optional(),
 });
 
 export type ServerEnvironment = z.infer<typeof serverEnvironmentSchema>;

@@ -192,6 +192,8 @@ The fixed roles are Super administrator, Finance administrator, Compliance admin
 
 The one-time first-admin process is documented in `docs/ADMIN_BOOTSTRAP.md`. It requires an existing Auth UUID, verified TOTP, an exact role, service-role server credentials, and explicit confirmation; it never runs automatically.
 
+The preferred bootstrap path is now `/admin/setup`: it additionally requires a confirmed signed-in account matching the server-only `INITIAL_SUPER_ADMIN_EMAIL`, a server-only one-time setup token, a short-lived HttpOnly setup grant, and an AAL2 session backed by a verified TOTP factor. The CLI remains an emergency-only fallback. The database operation is still the final atomic authority and permanently rejects subsequent bootstrap attempts.
+
 ## Phase 10B protected operations
 
 Phase 10B adds protected payment review and atomic crediting, controlled wallet adjustments and reversals, user restrictions and account status controls, in-app notifications, investment-plan management, and conservative user-investment lifecycle transitions. Each action validates input on the server, requires an active administrator with AAL2 and the operation-specific permission, performs a fresh TOTP challenge, invokes a protected database function, and appends an audit record.

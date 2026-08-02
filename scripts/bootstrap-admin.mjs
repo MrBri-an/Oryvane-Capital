@@ -15,6 +15,6 @@ const { data: userResult, error: userError } = await supabase.auth.admin.getUser
 if (userError || !userResult.user) throw new Error("The supplied Supabase Auth user does not exist.");
 const hasVerifiedTotp = userResult.user.factors?.some((factor) => factor.factor_type === "totp" && factor.status === "verified");
 if (!hasVerifiedTotp) throw new Error("The Auth user must enroll and verify a TOTP factor before bootstrap.");
-const { data, error } = await supabase.rpc("bootstrap_first_admin", { target_user_id: args["user-id"], target_role_name: args.role });
+const { data, error } = await supabase.rpc("bootstrap_first_admin", { p_user_id: args["user-id"], p_role_name: args.role });
 if (error) throw new Error(`Bootstrap rejected: ${error.message}`);
 process.stdout.write(`First administrator created and audited: ${data}\n`);
