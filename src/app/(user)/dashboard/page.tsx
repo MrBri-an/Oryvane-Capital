@@ -3,6 +3,7 @@ import { ArrowDownToLine, ArrowUpFromLine, Clock3, Landmark, ReceiptText, Trendi
 
 import { Money, DateValue, Label, Reference } from "@/components/dashboard/format";
 import { DashboardSection } from "@/components/dashboard/section";
+import { PortfolioOverview } from "@/components/dashboard/portfolio-overview";
 import { TransactionStatus } from "@/components/financial/status";
 import { CardEntrance } from "@/components/motion/motion-system";
 import { Alert } from "@/components/ui/alert";
@@ -23,6 +24,7 @@ export default async function DashboardPage() {
   ];
   return <DashboardSection eyebrow="Account overview" title={`Welcome, ${identity.profile?.full_name}`} description="A current view of your protected account records.">
     {identity.profile?.status !== "active" && <Alert className="mb-6" tone="warning" title={identity.isRestricted ? "Account restricted" : "Verification pending"}>{identity.isRestricted ? "You may review permitted records, but account actions are unavailable." : "You can review your account while verification is completed. Financial actions remain unavailable."}</Alert>}
+    {data.wallets.length ? <PortfolioOverview wallets={data.wallets} profileStatus={identity.profile?.status ?? "unavailable"} /> : null}
     {data.wallets.length ? <section aria-label="Wallet balances" className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">{data.wallets.flatMap((wallet) => {
       const figures: Array<{ label: string; value: number; icon: LucideIcon }> = [
         { label: "Total balance", value: wallet.total_balance, icon: Landmark },

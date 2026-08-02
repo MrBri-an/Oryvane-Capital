@@ -1,13 +1,14 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Manrope } from "next/font/google";
+import { Bricolage_Grotesque, IBM_Plex_Mono, Manrope } from "next/font/google";
+import { CosmicMarketBackground } from "@/components/motion/cosmic-market-background";
 
 import { ToastViewport } from "@/components/ui/toast";
 
 import "./globals.css";
 
-const geistSans = Geist({ subsets: ["latin"], variable: "--font-geist-sans" });
-const geistMono = Geist_Mono({ subsets: ["latin"], variable: "--font-geist-mono" });
+const bricolage = Bricolage_Grotesque({ subsets: ["latin"], variable: "--font-bricolage" });
 const manrope = Manrope({ subsets: ["latin"], variable: "--font-manrope" });
+const plexMono = IBM_Plex_Mono({ subsets: ["latin"], variable: "--font-plex-mono", weight: ["400", "500", "600"] });
 
 export const metadata: Metadata = {
   title: {
@@ -20,8 +21,9 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} ${manrope.variable}`}>
-        {children}
+      <body className={`${bricolage.variable} ${manrope.variable} ${plexMono.variable}`}>
+        <CosmicMarketBackground />
+        <div className="app-world">{children}</div>
         <ToastViewport />
       </body>
     </html>

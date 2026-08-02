@@ -1,2 +1,10 @@
-import { TriangleAlert } from "lucide-react";
-export function RiskNotice() { return <aside className="border-y border-warning/25 bg-warning/5"><div className="mx-auto flex max-w-[90rem] gap-3 px-[var(--space-page)] py-5 text-sm leading-6"><TriangleAlert aria-hidden className="mt-0.5 size-5 shrink-0 text-warning" /><p><strong className="text-foreground">Capital is at risk.</strong> <span className="text-muted">Investment values can rise or fall, and returns are not guaranteed. Review all relevant terms and risks before making a decision.</span></p></div></aside>; }
+"use client";
+
+import { ShieldAlert } from "lucide-react";
+import { usePathname } from "next/navigation";
+
+export function RiskNotice() {
+  const pathname = usePathname();
+  if (!/^\/investments\/[^/]+$/.test(pathname)) return null;
+  return <aside className="border-y border-warning/20 bg-warning/[.035]"><div className="mx-auto flex max-w-[90rem] items-start gap-3 px-[var(--space-page)] py-4 text-sm leading-6"><ShieldAlert aria-hidden className="mt-0.5 size-4 shrink-0 text-warning"/><p className="text-muted">Investment values may rise or fall. Review the applicable terms before proceeding.</p></div></aside>;
+}

@@ -1,9 +1,9 @@
 @import "tailwindcss";
 
 @theme inline {
-  --font-sans: var(--font-geist-sans);
-  --font-heading: var(--font-manrope);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-manrope);
+  --font-heading: var(--font-bricolage);
+  --font-mono: var(--font-plex-mono);
 
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -19,6 +19,7 @@
   --color-danger: var(--danger);
   --color-warning: var(--warning);
   --color-info: var(--info);
+  --color-cyan: var(--cyan);
 
   --radius-xs: 0.375rem;
   --radius-sm: 0.5rem;
@@ -37,17 +38,18 @@
 
 :root {
   color-scheme: dark;
-  --background: #090b0a;
-  --foreground: #f5f1e8;
-  --surface: #101311;
-  --surface-raised: #171b18;
-  --surface-subtle: #0d100e;
-  --border: #2a302c;
-  --border-strong: #424a44;
-  --muted: #aaa99f;
-  --emerald: #3fbd83;
-  --emerald-strong: #65d99f;
-  --gold: #c7a96b;
+  --background: #030706;
+  --foreground: #f3f7f4;
+  --surface: #09110f;
+  --surface-raised: #0d1916;
+  --surface-subtle: #060c0b;
+  --border: #193029;
+  --border-strong: #2c5045;
+  --muted: #9aada7;
+  --emerald: #2ee6a6;
+  --emerald-strong: #73f8c8;
+  --cyan: #50d5ff;
+  --gold: #d9b76e;
   --danger: #ef7d74;
   --warning: #e4b95f;
   --info: #78aee8;
@@ -88,20 +90,91 @@ html {
 body {
   min-height: 100vh;
   margin: 0;
-  background: var(--background);
+  background:
+    radial-gradient(circle at 75% -10%, rgb(46 230 166 / 0.09), transparent 28rem),
+    radial-gradient(circle at 0% 35%, rgb(80 213 255 / 0.05), transparent 24rem),
+    var(--background);
   color: var(--foreground);
-  font-family: var(--font-geist-sans), sans-serif;
+  font-family: var(--font-manrope), sans-serif;
   text-rendering: optimizeLegibility;
 }
 
 h1, h2, h3, h4, h5, h6, .font-financial {
-  font-family: var(--font-manrope), sans-serif;
+  font-family: var(--font-bricolage), sans-serif;
   font-variant-numeric: tabular-nums;
 }
 
 code, kbd, samp, .font-reference {
-  font-family: var(--font-geist-mono), monospace;
+  font-family: var(--font-plex-mono), monospace;
 }
+
+.app-world { position: relative; z-index: 1; min-height: 100vh; }
+.cosmic-market { z-index: 0; pointer-events: none; contain: strict; opacity: .88; }
+.cosmic-market.cosmic-quiet { opacity: .28; }
+.cosmic-quiet .bitcoin-coin, .cosmic-quiet .data-ribbon, .cosmic-quiet .cosmic-chart { display: none; }
+.cosmic-quiet .shooting-star { opacity: .35; filter: none; }
+.cosmic-grid { background-image: linear-gradient(rgb(80 213 255 / .05) 1px, transparent 1px), linear-gradient(90deg, rgb(80 213 255 / .05) 1px, transparent 1px); background-size: 62px 62px; transform: perspective(700px) rotateX(63deg) scale(1.8) translateY(18%); transform-origin: bottom; mask-image: linear-gradient(to top, black, transparent 78%); animation: grid-breathe 8s ease-in-out infinite; }
+.cosmic-aurora { background: radial-gradient(circle at 18% 18%, rgb(80 213 255 / .13), transparent 24%), radial-gradient(circle at 82% 26%, rgb(46 230 166 / .12), transparent 26%), radial-gradient(circle at 48% 86%, rgb(217 183 110 / .08), transparent 22%); animation: aurora-shift 12s ease-in-out infinite alternate; }
+.shooting-star { position: absolute; width: 150px; height: 2px; border-radius: 999px; background: linear-gradient(90deg, transparent, rgb(255 255 255 / .95)); filter: drop-shadow(0 0 7px rgb(80 213 255 / .9)); opacity: 0; }
+.shooting-star::after { content: ""; position: absolute; right: 0; top: -2px; width: 6px; height: 6px; border-radius: 50%; background: white; box-shadow: 0 0 18px var(--cyan); }
+.star-one { left: -12rem; top: 16%; transform: rotate(-18deg); animation: star-one 5.8s 1s linear infinite; }
+.star-two { right: -12rem; top: 48%; transform: rotate(198deg); animation: star-two 7.1s 3.2s linear infinite; }
+.star-three { left: 24%; bottom: -6rem; transform: rotate(-54deg); animation: star-three 6.4s 4.7s linear infinite; }
+.cosmic-moon { left: 0; top: 0; width: clamp(8rem, 16vw, 16rem); aspect-ratio: 1; border-radius: 50%; opacity: .3; background: radial-gradient(circle at 34% 28%, #fff 0 4%, #dce9e5 15%, #7c9890 48%, #263d37 73%, #08110f 100%); box-shadow: inset -24px -22px 38px rgb(0 0 0 / .72), inset 15px 10px 24px rgb(255 255 255 / .18), 0 0 55px rgb(173 243 225 / .14); }
+.moon-crater { position: absolute; border-radius: 50%; background: rgb(14 35 30 / .3); box-shadow: inset 3px 3px 7px rgb(0 0 0 / .35), 1px 1px 4px rgb(255 255 255 / .12); }
+.moon-crater-one { width: 22%; height: 18%; left: 20%; top: 48%; }.moon-crater-two { width: 12%; height: 12%; left: 58%; top: 24%; }.moon-crater-three { width: 16%; height: 14%; left: 62%; top: 62%; }
+.bitcoin-coin { left: 0; top: 0; width: clamp(7rem, 14vw, 13rem); aspect-ratio: 1; border-radius: 50%; opacity: .38; padding: 9px; background: conic-gradient(from 20deg, #6e4610, #ffe09a, #9b671b, #fff0b8, #74430d, #d49b35, #6e4610); box-shadow: inset 0 0 20px #fff2b155, 0 18px 55px #d89d2730; transform-style: preserve-3d; animation: coin-spin 6s linear infinite; }
+.bitcoin-rim { display: grid; place-items: center; width: 100%; height: 100%; border: 3px ridge rgb(255 224 154 / .7); border-radius: 50%; background: radial-gradient(circle at 34% 25%, #ffe6a3, #c58a26 38%, #75450d 72%, #2c1905); color: #ffe191; font: 700 clamp(3rem, 7vw, 7rem)/1 var(--font-plex-mono); text-shadow: -2px -2px #6f400b, 2px 2px #ffecb6; }
+.cosmic-chart { fill: none; stroke: rgb(46 230 166 / .14); stroke-width: 2; filter: drop-shadow(0 0 8px rgb(46 230 166 / .25)); stroke-dasharray: 18 12; animation: chart-flow 13s linear infinite; }
+.cosmic-chart .chart-ghost { stroke: rgb(80 213 255 / .1); stroke-dasharray: 5 16; animation: chart-flow 8s linear infinite reverse; }
+.particle-field { opacity: .35; background-image: radial-gradient(circle, rgb(115 248 200 / .7) 0 1px, transparent 1.5px); background-size: 83px 71px; animation: particle-pulse 5s ease-in-out infinite; }
+.static-market-symbol { color: rgb(243 247 244 / .18); text-shadow: 0 0 18px rgb(80 213 255 / .3); animation: symbol-pulse var(--symbol-time, 5s) ease-in-out infinite; }
+.symbol-1{left:4%;top:14%;font-size:26px}.symbol-2{left:13%;top:67%;font-size:14px;--symbol-time:7s}.symbol-3{left:26%;top:34%;font-size:18px}.symbol-4{left:38%;top:78%;font-size:28px;--symbol-time:6s}.symbol-5{left:48%;top:11%;font-size:13px}.symbol-6{left:60%;top:62%;font-size:32px;--symbol-time:8s}.symbol-7{left:70%;top:24%;font-size:20px}.symbol-8{left:83%;top:72%;font-size:12px}.symbol-9{left:91%;top:38%;font-size:18px;--symbol-time:7s}.symbol-10{left:7%;top:88%;font-size:12px}.symbol-11{left:35%;top:50%;font-size:11px}.symbol-12{left:76%;top:88%;font-size:13px}.symbol-13{left:88%;top:8%;font-size:11px}
+.data-ribbon { white-space: nowrap; color: rgb(154 173 167 / .09); font-size: 11px; letter-spacing: .35em; animation: data-scroll 25s linear infinite; }
+.cosmic-float { animation: surface-float var(--float-time, 6s) ease-in-out infinite; animation-delay: var(--float-delay, 0s); will-change: transform; }
+.cosmic-float:hover, .cosmic-float:focus-within, .cosmic-float:active { animation-play-state: paused; }
+.cosmic-float:nth-child(2n) { --float-time: 7.4s; --float-delay: -1.7s; }.cosmic-float:nth-child(3n) { --float-time: 5.3s; --float-delay: -.8s; }
+.market-ticker { animation: ticker-scroll 24s linear infinite; }
+.candlestick-strip i { width: 3px; border-radius: 1px; background: var(--emerald); transform-origin: bottom; animation: candle-live 1.8s ease-in-out infinite alternate; }
+.ticker-shell:hover .market-ticker, .ticker-shell:focus-within .market-ticker { animation-play-state: paused; }
+
+@keyframes star-one { 0%,72%{opacity:0;translate:0 0} 75%{opacity:1} 90%,100%{opacity:0;translate:125vw 36vh} }
+@keyframes star-two { 0%,64%{opacity:0;translate:0 0} 67%{opacity:.85} 84%,100%{opacity:0;translate:-120vw -30vh} }
+@keyframes star-three { 0%,76%{opacity:0;translate:0 0} 79%{opacity:.75} 94%,100%{opacity:0;translate:52vw -120vh} }
+@keyframes coin-spin { 0%{rotateY:0deg} 50%{filter:brightness(1.3)} 100%{rotateY:360deg} }
+@keyframes grid-breathe { 50%{opacity:.55;transform:perspective(700px) rotateX(63deg) scale(1.86) translateY(15%)} }
+@keyframes aurora-shift { to{transform:scale(1.12) translate3d(2%,-2%,0);filter:hue-rotate(12deg)} }
+@keyframes chart-flow { to{stroke-dashoffset:-240} }
+@keyframes particle-pulse { 50%{opacity:.65;transform:translate3d(0,-8px,0)} }
+@keyframes symbol-pulse { 50%{opacity:.35;filter:blur(.4px);transform:scale(1.08)} }
+@keyframes data-scroll { to{transform:translateX(-45%)} }
+@keyframes surface-float { 0%,100%{transform:translate3d(0,0,0)} 50%{transform:translate3d(0,-7px,0)} }
+@keyframes ticker-scroll { to{transform:translateX(-50%)} }
+@keyframes candle-live { to{transform:scaleY(.48);opacity:.48} }
+
+@media (max-width: 639px) { .cosmic-market { opacity: .58; } .shooting-star { width: 88px; } .static-market-symbol:nth-of-type(n+8), .data-ribbon, .particle-field { display:none; } .cosmic-moon,.bitcoin-coin{opacity:.2} .cosmic-grid{background-size:44px 44px} }
+
+.market-grid {
+  background-image: linear-gradient(rgb(80 213 255 / .045) 1px, transparent 1px), linear-gradient(90deg, rgb(80 213 255 / .045) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: linear-gradient(to bottom, black, transparent 92%);
+}
+
+.terminal-noise::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none; opacity: .18;
+  background-image: radial-gradient(rgb(255 255 255 / .22) .55px, transparent .55px); background-size: 5px 5px;
+  mask-image: linear-gradient(to bottom, black, transparent 85%);
+}
+
+@keyframes market-float { 0%,100% { transform: translate3d(0,0,0) rotate(var(--rotation)); } 50% { transform: translate3d(var(--drift),-24px,0) rotate(calc(var(--rotation) + 4deg)); } }
+@keyframes market-scan { from { transform: translateX(-35%); } to { transform: translateX(135%); } }
+@keyframes chart-draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+.market-symbol { animation: market-float var(--duration) ease-in-out infinite; animation-delay: var(--delay); }
+.market-scan { animation: market-scan 9s linear infinite; }
+.chart-path { path-length: 1; stroke-dasharray: 1; animation: chart-draw 1.2s var(--ease-emphasized) both; }
+.motion-paused *, .motion-paused *::before, .motion-paused *::after { animation-play-state: paused !important; }
+
+@media (max-width: 639px) { .market-symbol:nth-child(n+9) { display: none; } .market-grid { background-size: 36px 36px; } }
 
 a { color: inherit; }
 button, input, textarea, select { font: inherit; }
@@ -118,6 +191,8 @@ button, [role="button"], a, input, textarea, select { -webkit-tap-highlight-colo
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .shooting-star, .data-ribbon { display: none !important; }
+  .cosmic-float, .market-ticker, .bitcoin-coin { animation: none !important; transform: none !important; }
   html { scroll-behavior: auto !important; }
   *, *::before, *::after {
     scroll-behavior: auto !important;

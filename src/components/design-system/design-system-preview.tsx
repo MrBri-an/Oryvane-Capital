@@ -6,7 +6,7 @@ import { useState } from "react";
 import { AccountFigure } from "@/components/financial/account-figure";
 import { CurrencyValue, PercentageValue } from "@/components/financial/format-values";
 import { InvestmentStatus, StatusBadge, TransactionStatus } from "@/components/financial/status";
-import { AnimatedFinancialFigure, CardEntrance, PageTransition, ScrollReveal } from "@/components/motion/motion-system";
+import { AnimatedFinancialFigure, CardEntrance, PageTransition, PointerSurface, ScrollReveal } from "@/components/motion/motion-system";
 import { Alert } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -19,19 +19,26 @@ import { Table, TableCell, TableContainer, TableHead } from "@/components/ui/tab
 import { Tabs } from "@/components/ui/tabs";
 import { toast } from "@/components/ui/toast";
 import { Tooltip } from "@/components/ui/tooltip";
+import { MarketTerminal } from "@/components/market/market-terminal";
+import { MarketUniverse } from "@/components/market/market-universe";
+import type { MarketSnapshot } from "@/server/market-data";
 
 const swatches = [
-  ["Obsidian", "bg-background"], ["Surface", "bg-surface"], ["Raised", "bg-surface-raised"], ["Emerald", "bg-emerald"], ["Muted gold", "bg-gold"], ["Danger", "bg-danger"], ["Warning", "bg-warning"], ["Information", "bg-info"],
+  ["Obsidian", "bg-background"], ["Midnight", "bg-surface"], ["Raised", "bg-surface-raised"], ["Emerald", "bg-emerald"], ["Electric cyan", "bg-cyan"], ["Controlled gold", "bg-gold"], ["Danger", "bg-danger"], ["Warning", "bg-warning"],
 ];
 
 function PreviewSection({ title, description, children }: { title: string; description: string; children: React.ReactNode }) { return <ScrollReveal className="border-t border-border py-10 sm:py-14"><div className="mb-7"><h2 className="text-2xl font-semibold sm:text-3xl">{title}</h2><p className="mt-2 max-w-2xl text-sm text-muted sm:text-base">{description}</p></div>{children}</ScrollReveal>; }
 
-export function DesignSystemPreview() {
+export function DesignSystemPreview({ market }: { market: MarketSnapshot }) {
   const [modalOpen, setModalOpen] = useState(false);
   return <PageTransition className="mx-auto w-full max-w-[90rem] px-[var(--space-page)] py-8 sm:py-12">
-    <header className="pb-10 sm:pb-16"><Badge tone="gold">Private preview</Badge><h1 className="mt-5 max-w-4xl text-4xl font-semibold tracking-[-0.04em] sm:text-6xl">Oryvane Capital design system</h1><p className="mt-5 max-w-2xl text-base text-muted sm:text-lg">A restrained foundation for trustworthy public, user, and administrative experiences. This route is unlinked and marked no-index.</p></header>
+    <header className="terminal-noise relative overflow-hidden rounded-3xl border border-border px-5 py-16 sm:px-10 sm:py-24"><MarketUniverse compact /><div className="relative"><Badge tone="gold">Public preview</Badge><h1 className="mt-5 max-w-5xl text-[clamp(2.7rem,7vw,6.5rem)] font-semibold leading-[.94] tracking-[-0.065em]">Oryvane Capital design system</h1><p className="mt-6 max-w-2xl text-base leading-7 text-muted sm:text-lg">A high-energy cosmic financial language for public, customer, and administrative experiences. This route is unlinked and marked no-index.</p></div></header>
 
-    <PreviewSection title="Colour and type" description="Obsidian surfaces, controlled emerald action colour, muted gold highlights, and warm readable text."><div className="grid grid-cols-2 gap-3 sm:grid-cols-4">{swatches.map(([name, color]) => <div key={name}><div className={`aspect-[3/2] rounded-lg border border-border ${color}`} /><p className="mt-2 text-sm text-muted">{name}</p></div>)}</div><div className="mt-10 grid gap-6 md:grid-cols-3"><div><p className="text-xs uppercase tracking-widest text-muted">Manrope</p><p className="mt-2 font-heading text-3xl font-semibold">Financial clarity</p></div><div><p className="text-xs uppercase tracking-widest text-muted">Geist Sans</p><p className="mt-2 text-lg">Interface content remains calm and legible.</p></div><div><p className="text-xs uppercase tracking-widest text-muted">Geist Mono</p><p className="font-reference mt-2 break-all text-sm">REFERENCE-FORMAT-PREVIEW</p></div></div></PreviewSection>
+    <PreviewSection title="Global motion engine" description="The live page demonstrates exactly three shooting stars, a fast scroll-linked moon, a metallic rotating Bitcoin coin, static market symbols, flowing chart lines, particles, and grid distortion. Reduced-motion mode removes travel, rotation, and floating movement."><div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">{["Three shooting stars", "Scroll-linked moon", "Bitcoin depth path", "Static market symbols"].map((label, index) => <Card key={label} style={{ ["--float-time" as string]: `${5 + index * .7}s`, ["--float-delay" as string]: `${index * -.6}s` }}><p className="font-reference text-xs text-cyan">MOTION / 0{index + 1}</p><p className="mt-8 font-heading text-xl">{label}</p></Card>)}</div></PreviewSection>
+
+    <PreviewSection title="Colour and type" description="Obsidian and midnight surfaces, emerald action colour, electric cyan detail, controlled gold, and readable contrast."><div className="grid grid-cols-2 gap-3 sm:grid-cols-4">{swatches.map(([name, color]) => <div key={name}><div className={`aspect-[3/2] rounded-xl border border-border ${color}`} /><p className="mt-2 text-sm text-muted">{name}</p></div>)}</div><div className="mt-10 grid gap-6 md:grid-cols-3"><div><p className="font-reference text-xs uppercase tracking-widest text-muted">Bricolage Grotesque</p><p className="mt-2 font-heading text-3xl font-semibold">Financial clarity</p></div><div><p className="font-reference text-xs uppercase tracking-widest text-muted">Manrope</p><p className="mt-2 text-lg">Interface content remains energetic and legible.</p></div><div><p className="font-reference text-xs uppercase tracking-widest text-muted">IBM Plex Mono</p><p className="font-reference mt-2 break-all text-sm">REFERENCE-FORMAT-PREVIEW</p></div></div></PreviewSection>
+
+    <PreviewSection title="Market universe and charts" description="Efficient CSS and SVG motion, server-sourced market data, stable failure states, and reduced-motion support."><PointerSurface><MarketTerminal snapshot={market} /></PointerSurface></PreviewSection>
 
     <PreviewSection title="Actions and status" description="All interactive targets provide keyboard focus, disabled states, and mobile-friendly dimensions."><div className="flex flex-wrap gap-3"><Button>Primary action</Button><Button variant="secondary">Secondary</Button><Button variant="ghost">Quiet action</Button><Button variant="danger">Destructive</Button><Button disabled>Unavailable</Button></div><div className="mt-6 flex flex-wrap gap-2"><Badge>Neutral</Badge><Badge tone="success">Successful</Badge><Badge tone="warning">Review</Badge><Badge tone="danger">Attention</Badge><StatusBadge status="Restricted" tone="warning" /></div></PreviewSection>
 
