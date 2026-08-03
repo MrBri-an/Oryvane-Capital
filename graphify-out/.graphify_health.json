@@ -1,0 +1,192 @@
+{
+  "node_count": 864,
+  "unverified_node_count": 0,
+  "raw_edge_count": 2262,
+  "non_object_edges": 0,
+  "missing_endpoint_edges": 0,
+  "dangling_endpoint_edges": 269,
+  "self_loop_edges": 2,
+  "valid_candidate_edges": 1993,
+  "exact_duplicate_edges": 2,
+  "directed_unique_endpoint_pairs": 1985,
+  "directed_same_endpoint_collapsed_edges": 8,
+  "undirected_unique_endpoint_pairs": 1981,
+  "undirected_same_endpoint_collapsed_edges": 12,
+  "same_endpoint_group_count": 7,
+  "relation_variant_groups": 2,
+  "source_file_variant_groups": 0,
+  "source_location_variant_groups": 4,
+  "context_variant_groups": 1,
+  "post_build_graph_type": "Graph",
+  "post_build_node_count": 864,
+  "post_build_edge_count": 1981,
+  "post_build_error": "",
+  "producer_suppression": {
+    "path": "C:\\Users\\NEW USER\\AppData\\Roaming\\uv\\tools\\graphifyy\\Lib\\site-packages\\graphify\\extract.py",
+    "total_sites": 11,
+    "sites": [
+      {
+        "line": 1099,
+        "name": "seen_ids",
+        "tuple_arity": 0,
+        "sample": "seen_ids = {n[\"id\"] for n in nodes}"
+      },
+      {
+        "line": 1253,
+        "name": "seen_ids",
+        "tuple_arity": 0,
+        "sample": "seen_ids = {n[\"id\"] for n in nodes}"
+      },
+      {
+        "line": 1255,
+        "name": "seen_doc_refs",
+        "tuple_arity": 0,
+        "sample": "seen_doc_refs: set[str] = set()"
+      },
+      {
+        "line": 1600,
+        "name": "seen_ids",
+        "tuple_arity": 0,
+        "sample": "seen_ids: set[str] = {n[\"id\"] for n in nodes}"
+      },
+      {
+        "line": 2069,
+        "name": "seen_keys",
+        "tuple_arity": 0,
+        "sample": "seen_keys: set[tuple] = set()"
+      },
+      {
+        "line": 2147,
+        "name": "seen_keys",
+        "tuple_arity": 0,
+        "sample": "seen_keys: set[tuple] = set()"
+      },
+      {
+        "line": 3191,
+        "name": "seen_ids",
+        "tuple_arity": 0,
+        "sample": "seen_ids: set[str] = set()"
+      },
+      {
+        "line": 3299,
+        "name": "seen_ids",
+        "tuple_arity": 0,
+        "sample": "seen_ids: set[str] = set()"
+      },
+      {
+        "line": 3378,
+        "name": "seen_ids",
+        "tuple_arity": 0,
+        "sample": "seen_ids: set[str] = set()"
+      },
+      {
+        "line": 3893,
+        "name": "seen_ids",
+        "tuple_arity": 0,
+        "sample": "seen_ids: set[str] = set()"
+      },
+      {
+        "line": 3894,
+        "name": "seen_edges",
+        "tuple_arity": 4,
+        "sample": "seen_edges: set[tuple[str, str, str, str | None]] = set()"
+      }
+    ],
+    "error": ""
+  },
+  "examples": [
+    {
+      "source": "src_server_admin_authorization",
+      "target": "src_server_admin_access_context",
+      "edge_count": 3,
+      "relations": [
+        "imports_from",
+        "re_exports"
+      ],
+      "source_files": [
+        "src/server/admin/authorization.ts"
+      ],
+      "source_locations": [
+        "L7",
+        "L9"
+      ],
+      "contexts": [
+        "export",
+        "import",
+        "re-export"
+      ]
+    },
+    {
+      "source": "src_components_admin_admin_shell",
+      "target": "src_server_admin_access_context_admincontext",
+      "edge_count": 2,
+      "relations": [
+        "imports"
+      ],
+      "source_files": [
+        "src/components/admin/admin-shell.tsx"
+      ],
+      "source_locations": [
+        "L3"
+      ],
+      "contexts": [
+        "import"
+      ]
+    },
+    {
+      "source": "src_security_logging",
+      "target": "src_security_logging_securitylog",
+      "edge_count": 2,
+      "relations": [
+        "contains"
+      ],
+      "source_files": [
+        "src/security/logging.ts"
+      ],
+      "source_locations": [
+        "L3",
+        "L6"
+      ],
+      "contexts": [
+        ""
+      ]
+    },
+    {
+      "source": "src_server_admin_authorization",
+      "target": "src_server_admin_access_context_admincontext",
+      "edge_count": 2,
+      "relations": [
+        "imports",
+        "re_exports"
+      ],
+      "source_files": [
+        "src/server/admin/authorization.ts"
+      ],
+      "source_locations": [
+        "L7",
+        "L9"
+      ],
+      "contexts": [
+        "import",
+        "re-export"
+      ]
+    },
+    {
+      "source": "supabase_migrations_20260801210000_phase6_schema_public_account_restrictions",
+      "target": "supabase_migrations_20260801210000_phase6_schema_public_admin_users",
+      "edge_count": 2,
+      "relations": [
+        "references"
+      ],
+      "source_files": [
+        "supabase/migrations/20260801210000_phase6_schema.sql"
+      ],
+      "source_locations": [
+        "L217"
+      ],
+      "contexts": [
+        ""
+      ]
+    }
+  ]
+}

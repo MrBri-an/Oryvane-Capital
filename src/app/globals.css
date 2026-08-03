@@ -112,14 +112,13 @@ code, kbd, samp, .font-reference {
 .cosmic-market { z-index: 0; pointer-events: none; contain: strict; opacity: .88; }
 .cosmic-market.cosmic-quiet { opacity: .28; }
 .cosmic-quiet .bitcoin-coin, .cosmic-quiet .data-ribbon, .cosmic-quiet .cosmic-chart { display: none; }
-.cosmic-quiet .shooting-star { opacity: .35; filter: none; }
+.cosmic-quiet .shooting-star { filter: none; }
 .cosmic-grid { background-image: linear-gradient(rgb(80 213 255 / .05) 1px, transparent 1px), linear-gradient(90deg, rgb(80 213 255 / .05) 1px, transparent 1px); background-size: 62px 62px; transform: perspective(700px) rotateX(63deg) scale(1.8) translateY(18%); transform-origin: bottom; mask-image: linear-gradient(to top, black, transparent 78%); animation: grid-breathe 8s ease-in-out infinite; }
 .cosmic-aurora { background: radial-gradient(circle at 18% 18%, rgb(80 213 255 / .13), transparent 24%), radial-gradient(circle at 82% 26%, rgb(46 230 166 / .12), transparent 26%), radial-gradient(circle at 48% 86%, rgb(217 183 110 / .08), transparent 22%); animation: aurora-shift 12s ease-in-out infinite alternate; }
-.shooting-star { position: absolute; width: 150px; height: 2px; border-radius: 999px; background: linear-gradient(90deg, transparent, rgb(255 255 255 / .95)); filter: drop-shadow(0 0 7px rgb(80 213 255 / .9)); opacity: 0; }
-.shooting-star::after { content: ""; position: absolute; right: 0; top: -2px; width: 6px; height: 6px; border-radius: 50%; background: white; box-shadow: 0 0 18px var(--cyan); }
-.star-one { left: -12rem; top: 16%; transform: rotate(-18deg); animation: star-one 5.8s 1s linear infinite; }
-.star-two { right: -12rem; top: 48%; transform: rotate(198deg); animation: star-two 7.1s 3.2s linear infinite; }
-.star-three { left: 24%; bottom: -6rem; transform: rotate(-54deg); animation: star-three 6.4s 4.7s linear infinite; }
+.shooting-star-field { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
+.shooting-star { position: absolute; left: 0; top: 0; width: var(--meteor-length, 140px); height: 2px; transform-origin: right center; border-radius: 999px; background: linear-gradient(90deg, transparent 0%, rgb(80 213 255 / .08) 26%, rgb(210 246 255 / .7) 78%, white 100%); filter: drop-shadow(0 0 5px rgb(80 213 255 / .82)); opacity: 0; will-change: transform, opacity; }
+.shooting-star::before { content: ""; position: absolute; right: -4px; top: -5px; width: 12px; height: 12px; border-radius: 50%; background: radial-gradient(circle, white 0 18%, rgb(80 213 255 / .75) 30%, transparent 72%); filter: blur(.3px); }
+.shooting-star::after { content: ""; position: absolute; right: -1px; top: -2px; width: 6px; height: 6px; border-radius: 50%; background: white; box-shadow: 0 0 9px 2px rgb(80 213 255 / .72), 0 0 22px rgb(255 255 255 / .5); }
 .cosmic-moon { left: 0; top: 0; width: clamp(8rem, 16vw, 16rem); aspect-ratio: 1; border-radius: 50%; opacity: .3; background: radial-gradient(circle at 34% 28%, #fff 0 4%, #dce9e5 15%, #7c9890 48%, #263d37 73%, #08110f 100%); box-shadow: inset -24px -22px 38px rgb(0 0 0 / .72), inset 15px 10px 24px rgb(255 255 255 / .18), 0 0 55px rgb(173 243 225 / .14); }
 .moon-crater { position: absolute; border-radius: 50%; background: rgb(14 35 30 / .3); box-shadow: inset 3px 3px 7px rgb(0 0 0 / .35), 1px 1px 4px rgb(255 255 255 / .12); }
 .moon-crater-one { width: 22%; height: 18%; left: 20%; top: 48%; }.moon-crater-two { width: 12%; height: 12%; left: 58%; top: 24%; }.moon-crater-three { width: 16%; height: 14%; left: 62%; top: 62%; }
@@ -138,9 +137,6 @@ code, kbd, samp, .font-reference {
 .candlestick-strip i { width: 3px; border-radius: 1px; background: var(--emerald); transform-origin: bottom; animation: candle-live 1.8s ease-in-out infinite alternate; }
 .ticker-shell:hover .market-ticker, .ticker-shell:focus-within .market-ticker { animation-play-state: paused; }
 
-@keyframes star-one { 0%,72%{opacity:0;translate:0 0} 75%{opacity:1} 90%,100%{opacity:0;translate:125vw 36vh} }
-@keyframes star-two { 0%,64%{opacity:0;translate:0 0} 67%{opacity:.85} 84%,100%{opacity:0;translate:-120vw -30vh} }
-@keyframes star-three { 0%,76%{opacity:0;translate:0 0} 79%{opacity:.75} 94%,100%{opacity:0;translate:52vw -120vh} }
 @keyframes coin-spin { 0%{rotateY:0deg} 50%{filter:brightness(1.3)} 100%{rotateY:360deg} }
 @keyframes grid-breathe { 50%{opacity:.55;transform:perspective(700px) rotateX(63deg) scale(1.86) translateY(15%)} }
 @keyframes aurora-shift { to{transform:scale(1.12) translate3d(2%,-2%,0);filter:hue-rotate(12deg)} }
@@ -152,7 +148,28 @@ code, kbd, samp, .font-reference {
 @keyframes ticker-scroll { to{transform:translateX(-50%)} }
 @keyframes candle-live { to{transform:scaleY(.48);opacity:.48} }
 
-@media (max-width: 639px) { .cosmic-market { opacity: .58; } .shooting-star { width: 88px; } .static-market-symbol:nth-of-type(n+8), .data-ribbon, .particle-field { display:none; } .cosmic-moon,.bitcoin-coin{opacity:.2} .cosmic-grid{background-size:44px 44px} }
+@media (max-width: 639px) { .cosmic-market { opacity: .58; } .static-market-symbol:nth-of-type(n+8), .data-ribbon, .particle-field { display:none; } .cosmic-moon,.bitcoin-coin{opacity:.2} .cosmic-grid{background-size:44px 44px} }
+
+.sequence-section { background-image: radial-gradient(circle at 15% 50%, rgb(80 213 255 / .055), transparent 28rem), radial-gradient(circle at 85% 35%, rgb(46 230 166 / .05), transparent 24rem); }
+.sequence-line { position: absolute; left: 1.25rem; top: 1.25rem; bottom: 1.25rem; width: 1px; overflow: hidden; background: linear-gradient(to bottom, transparent, rgb(80 213 255 / .32) 15% 85%, transparent); }
+.sequence-line span { position: absolute; left: -2px; top: 0; width: 5px; height: 22%; border-radius: 999px; background: var(--cyan); box-shadow: 0 0 14px var(--cyan); animation: sequence-light 3.2s var(--ease-emphasized) infinite; }
+.sequence-card { box-shadow: 0 18px 50px rgb(0 0 0 / .16); transition: border-color var(--motion-fast) var(--ease-standard), box-shadow var(--motion-fast) var(--ease-standard); }
+.sequence-card:hover { border-color: color-mix(in srgb, var(--cyan) 38%, var(--border)); box-shadow: 0 22px 55px rgb(0 0 0 / .24), inset 0 1px rgb(255 255 255 / .025); }
+.sequence-marker { box-shadow: 0 0 18px rgb(80 213 255 / .13); }
+.framework-section { background-image: radial-gradient(circle at 18% 22%, rgb(217 183 110 / .07), transparent 24rem), radial-gradient(circle at 82% 76%, rgb(46 230 166 / .065), transparent 28rem); }
+.framework-orbit { position: absolute; width: 34rem; aspect-ratio: 1; right: -14rem; top: 2rem; border: 1px solid rgb(80 213 255 / .08); border-radius: 50%; box-shadow: 0 0 0 5rem rgb(46 230 166 / .018), 0 0 0 10rem rgb(217 183 110 / .012); }
+.framework-card { border-color: color-mix(in srgb, var(--border) 80%, var(--gold)); transition: transform var(--motion-base) var(--ease-emphasized), border-color var(--motion-base) var(--ease-standard), box-shadow var(--motion-base) var(--ease-standard); }
+.framework-card:hover { transform: translate3d(0,-5px,0); border-color: color-mix(in srgb, var(--emerald) 42%, var(--border)); box-shadow: 0 26px 60px rgb(0 0 0 / .3), inset 0 1px rgb(255 255 255 / .035); }
+.framework-sweep { position: absolute; inset: -35% auto -35% -55%; width: 42%; transform: skewX(-18deg); background: linear-gradient(90deg, transparent, rgb(255 255 255 / .075), transparent); transition: translate .7s var(--ease-emphasized); }
+.framework-card:hover .framework-sweep { translate: 390% 0; }
+
+@keyframes sequence-light { 0% { translate: 0 -120%; opacity: 0; } 15% { opacity: 1; } 80% { opacity: .85; } 100% { translate: 0 560%; opacity: 0; } }
+
+@media (min-width: 768px) {
+  .sequence-line { left: 5%; right: 5%; top: 1.25rem; bottom: auto; width: auto; height: 1px; background: linear-gradient(to right, transparent, rgb(80 213 255 / .32) 12% 88%, transparent); }
+  .sequence-line span { left: 0; top: -2px; width: 14%; height: 5px; }
+  @keyframes sequence-light { 0% { translate: -120% 0; opacity: 0; } 15% { opacity: 1; } 80% { opacity: .85; } 100% { translate: 820% 0; opacity: 0; } }
+}
 
 .market-grid {
   background-image: linear-gradient(rgb(80 213 255 / .045) 1px, transparent 1px), linear-gradient(90deg, rgb(80 213 255 / .045) 1px, transparent 1px);
@@ -192,6 +209,7 @@ button, [role="button"], a, input, textarea, select { -webkit-tap-highlight-colo
 
 @media (prefers-reduced-motion: reduce) {
   .shooting-star, .data-ribbon { display: none !important; }
+  .sequence-line span, .framework-sweep { display: none !important; }
   .cosmic-float, .market-ticker, .bitcoin-coin { animation: none !important; transform: none !important; }
   html { scroll-behavior: auto !important; }
   *, *::before, *::after {

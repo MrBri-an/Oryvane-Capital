@@ -3,6 +3,7 @@
 import { motion, useReducedMotion, useScroll, useTransform } from "motion/react";
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
+import { ShootingStars } from "@/components/motion/shooting-stars";
 
 const symbols = ["$", "€", "£", "¥", "₦", "₿", "Ξ", "BTC", "ETH", "SOL", "BNB", "XRP", "USDT"];
 
@@ -30,7 +31,7 @@ export function CosmicMarketBackground() {
   return <div aria-hidden className={`cosmic-market fixed inset-0 overflow-hidden ${quiet ? "cosmic-quiet" : ""} ${paused ? "motion-paused" : ""}`}>
     <div className="cosmic-grid absolute inset-0" />
     <div className="cosmic-aurora absolute inset-0" />
-    <div className="shooting-star star-one" /><div className="shooting-star star-two" /><div className="shooting-star star-three" />
+    <ShootingStars />
     <motion.div className="cosmic-moon absolute" style={reduced ? undefined : { x: moonX, y: moonY, rotate: moonRotate, scale: moonScale }}><span className="moon-crater moon-crater-one"/><span className="moon-crater moon-crater-two"/><span className="moon-crater moon-crater-three"/></motion.div>
     <motion.div className="bitcoin-coin absolute" style={reduced ? undefined : { x: coinX, y: coinY, scale: coinScale, rotate: coinRotate }}><div className="bitcoin-rim"><span>₿</span></div></motion.div>
     <svg className="cosmic-chart absolute inset-x-0 bottom-[8%] h-[38%] w-full" viewBox="0 0 1600 360" preserveAspectRatio="none"><path d="M0 300 C130 240 180 320 300 245 S490 170 590 220 S760 80 870 145 S1040 245 1160 125 S1400 80 1600 28"/><path className="chart-ghost" d="M0 330 C180 275 260 290 390 210 S620 300 760 185 S980 115 1120 190 S1380 105 1600 142"/></svg>
