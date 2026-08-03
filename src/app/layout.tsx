@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Bricolage_Grotesque, IBM_Plex_Mono, Manrope } from "next/font/google";
+import { connection } from "next/server";
 import { CosmicMarketBackground } from "@/components/motion/cosmic-market-background";
 
 import { ToastViewport } from "@/components/ui/toast";
@@ -18,7 +19,11 @@ export const metadata: Metadata = {
   description: "Oryvane Capital investment platform.",
 };
 
-export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+  // A request-bound nonce cannot be attached to a statically generated shell.
+  // This root boundary keeps public, auth, dashboard, and admin documents dynamic.
+  await connection();
+
   return (
     <html lang="en">
       <body className={`${bricolage.variable} ${manrope.variable} ${plexMono.variable}`}>
